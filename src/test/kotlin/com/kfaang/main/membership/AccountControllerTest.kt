@@ -2,6 +2,7 @@ package com.kfaang.main.membership
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.kfaang.main.AccountRepository
+import com.kfaang.main.board.PostRepository
 import com.kfaang.main.membership.dto.SignUpDto
 import org.aspectj.lang.annotation.Before
 import org.junit.jupiter.api.Assertions.*
@@ -38,8 +39,12 @@ internal class AccountControllerTest {
     @Autowired
     lateinit var accountService: AccountService
 
+    @Autowired
+    lateinit var postRepository: PostRepository
+
     @BeforeEach
     fun initData() {
+        postRepository.deleteAll()
         accountRepository.deleteAll()
     }
 

@@ -27,12 +27,7 @@ class AccountService(
 
     override fun loadUserByUsername(username: String): UserDetails {
         val account = accountRepository.findByEmail(username)?: throw UsernameNotFoundException(username)
-        return User(account.email, account.password, authorities(account.roles))
+        return UserAccount(account)
     }
 
-    private fun authorities(roles: MutableSet<AccountRole>): MutableCollection<out GrantedAuthority>? {
-        return roles.map {
-            SimpleGrantedAuthority("ROLE_${it.name}")
-        }.toMutableSet()
-    }
 }

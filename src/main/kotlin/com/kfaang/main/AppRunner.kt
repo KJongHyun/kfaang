@@ -11,6 +11,6 @@ class AppRunner(
         private val accountService: AccountService
 ) : ApplicationRunner {
     override fun run(args: ApplicationArguments?) {
-        accountService.processNewAccount(SignUpDto(email = "whdgus8219@naver.com", password = "428563", nickname = "종현킹"))
+
     }
 }

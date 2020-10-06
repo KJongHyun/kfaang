@@ -11,25 +11,27 @@ import javax.persistence.Id
 import javax.persistence.ManyToOne
 
 @Entity
-class Post {
+class Post(
 
     @Id @GeneratedValue
-    var id: Long? = null
-    var title: String? = null
-    var contents: String? = null
-    var wroteAt: LocalDateTime? = null
+    var id: Long? = null,
+    var title: String? = null,
+    var contents: String? = null,
+    var wroteAt: LocalDateTime? = null,
 
     @ManyToOne
-    var category: Category? = null
+    var category: Category? = null,
 
     @ManyToOne
     var account: Account? = null
+) {
 
     override fun equals(other: Any?) = kotlinEquals(other = other, properties = equalsAndHashCodeProperties)
 
     override fun hashCode() = kotlinHashCode(properties = equalsAndHashCodeProperties)
 
     override fun toString() = kotlinToString(properties = toStringProperties)
+
 
     companion object {
         private val equalsAndHashCodeProperties = arrayOf(Post::id)

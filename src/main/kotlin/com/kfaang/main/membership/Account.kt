@@ -3,6 +3,7 @@ package com.kfaang.main.membership
 import au.com.console.kassava.kotlinEquals
 import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
+import org.springframework.security.core.userdetails.User
 import java.time.LocalDateTime
 import javax.persistence.*
 
