@@ -5,10 +5,7 @@ import au.com.console.kassava.kotlinHashCode
 import au.com.console.kassava.kotlinToString
 import com.kfaang.main.membership.Account
 import java.time.LocalDateTime
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.ManyToOne
+import javax.persistence.*
 
 @Entity
 class Post(
@@ -16,6 +13,7 @@ class Post(
     @Id @GeneratedValue
     var id: Long? = null,
     var title: String? = null,
+    @Lob
     var contents: String? = null,
     var wroteAt: LocalDateTime? = null,
 

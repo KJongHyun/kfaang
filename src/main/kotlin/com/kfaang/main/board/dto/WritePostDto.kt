@@ -10,4 +10,5 @@ class WritePostDto(
     fun toPost(): Post {
         return Post(title = this.title, contents = this.contents)
     }
+
 }

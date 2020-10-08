@@ -6,7 +6,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class BoardService(
-        private val postRepository: PostRepository
+        private val postRepository: PostRepository,
+        private val categoryRepository: CategoryRepository
 ) {
 
     fun writePost(writePostDto: WritePostDto, category: Category, account: Account) : Post {
@@ -18,4 +19,8 @@ class BoardService(
         return postRepository.save(post)
     }
 
+    fun createCategory(category: Category, account: Account): Category {
+        category.createBy = account
+        return categoryRepository.save(category)
+    }
 }
