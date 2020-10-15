@@ -25,6 +25,10 @@ class BaseControllerTests {
         val signUpDto = SignUpDto(email = "whdgus8219@naver.com", password = "428563", nickname = "마나얼")
         generateAccount(signUpDto)
 
+        return getAccessTokenBySignUpDto(signUpDto)
+    }
+
+    fun getAccessTokenBySignUpDto(signUpDto: SignUpDto): String {
         val clientId = "myApp"
         val clientSecret = "pass"
 
@@ -39,7 +43,7 @@ class BaseControllerTests {
         return parser.parseMap(responseBody).get("access_token").toString()
     }
 
-    private fun generateAccount(signUpDto: SignUpDto) : Account {
-        return accountService.processNewAccount(signUpDto)
+    fun generateAccount(signUpDto: SignUpDto) : Account {
+        return accountService.processNewAdminAccount(signUpDto)
     }
 }

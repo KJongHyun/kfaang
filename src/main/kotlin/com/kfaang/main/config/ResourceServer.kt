@@ -22,7 +22,7 @@ class ResourceServer : ResourceServerConfigurerAdapter() {
                 .authorizeRequests()
                     .mvcMatchers(HttpMethod.GET, "/api/**").permitAll()
                     .mvcMatchers("/api/sign-up").permitAll()
-                    .mvcMatchers("/api/board/new-category").hasRole("ROLE_ADMIN")
+                    .mvcMatchers("/api/board/new-category").hasRole("ADMIN")
                     .anyRequest()
                     .authenticated()
                 .and()

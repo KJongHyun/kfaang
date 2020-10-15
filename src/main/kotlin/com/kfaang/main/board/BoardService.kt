@@ -23,4 +23,9 @@ class BoardService(
         category.createBy = account
         return categoryRepository.save(category)
     }
+
+    fun getPost(postId: Long): Post {
+
+        return postRepository.findById(postId).orElseThrow()
+    }
 }

@@ -5,6 +5,7 @@ import com.kfaang.main.AccountRepository
 import com.kfaang.main.BaseControllerTests
 import com.kfaang.main.board.dto.CategoryDto
 import com.kfaang.main.board.dto.WritePostDto
+import com.kfaang.main.membership.dto.SignUpDto
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -31,19 +32,28 @@ internal class BoardControllerTest : BaseControllerTests() {
 
     @Autowired lateinit var categoryRepository: CategoryRepository
 
+    @Autowired lateinit var boardService: BoardService
+
     @BeforeEach
     fun beforeEach() {
         postRepository.deleteAll()
+        categoryRepository.deleteAll()
         accountRepository.deleteAll()
-
     }
 
     @DisplayName("게시글 작성")
     @Test
     fun writePost() {
+        val signUpDto = SignUpDto(email = "whdgus8219@naver.com", password = "428563", nickname = "마나얼")
+        val account = generateAccount(signUpDto)
+
+        val categoryName = "free"
+
+        val category = boardService.createCategory(Category(name = categoryName), account = account)
+
         val writePostDto = WritePostDto("타이틀", "컨텐츠")
-        val perform = mockMvc.perform(post("/api/board/write")
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+        val perform = mockMvc.perform(post("/api/board/${category.name}/write")
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken(signUpDto))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(writePostDto)))
                 .andExpect(status().isOk)
@@ -61,7 +71,23 @@ internal class BoardControllerTest : BaseControllerTests() {
     @DisplayName("게시글 보기")
     @Test
     fun getPost() {
-        mockMvc.perform(get("/api/board/"))
+        val signUpDto = SignUpDto(email = "whdgus8219@naver.com", password = "428563", nickname = "마나얼")
+        val account = generateAccount(signUpDto)
+
+
+
+        val categoryName = "free"
+
+        val category = boardService.createCategory(Category(name = categoryName), account = account)
+
+        val writePostDto = WritePostDto("타이틀", "컨텐츠")
+
+        val post = boardService.writePost(writePostDto = writePostDto, category = category, account = account)
+
+        mockMvc.perform(get("/api/board/${post.id}"))
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("title").exists())
+                .andExpect(jsonPath("contents").exists())
     }
 
     @DisplayName("카테고리 생성")
@@ -73,7 +99,7 @@ internal class BoardControllerTest : BaseControllerTests() {
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(categoryDto)))
-                .andExpect(status().isOk)
+                .andExpect(status().isCreated)
                 .andExpect(jsonPath("id").exists())
 
         val parser = Jackson2JsonParser()
@@ -87,4 +113,5 @@ internal class BoardControllerTest : BaseControllerTests() {
 
     private fun getBearerToken() = "Bearer ${getAccessToken()}"
 
+    private fun getBearerToken(signUpDto: SignUpDto) = "Bearer ${getAccessTokenBySignUpDto(signUpDto)}"
 }

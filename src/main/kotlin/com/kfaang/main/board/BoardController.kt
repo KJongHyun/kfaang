@@ -15,6 +15,13 @@ class BoardController(
         private val boardService: BoardService
 ) {
 
+    @GetMapping("/{postId}")
+    fun getPost(@PathVariable postId: Long): ResponseEntity<Any> {
+        val post = boardService.getPost(postId)
+
+        return ResponseEntity(post, HttpStatus.OK)
+    }
+
     @PostMapping("/{categoryName}/write")
     fun writePost(@RequestBody writePostDto: WritePostDto, @PathVariable categoryName: String, @CurrentAccount account: Account): ResponseEntity<Any> {
         val category = categoryRepository.findByName(categoryName) ?: throw Exception()
@@ -28,7 +35,7 @@ class BoardController(
 
         val category = boardService.createCategory(categoryDto.toCategory(), account)
 
-        return ResponseEntity(category, HttpStatus.OK)
+        return ResponseEntity(category, HttpStatus.CREATED)
     }
 
 }
