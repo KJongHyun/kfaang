@@ -25,17 +25,17 @@ class BaseControllerTests {
         val signUpDto = SignUpDto(email = "whdgus8219@naver.com", password = "428563", nickname = "마나얼")
         generateAccount(signUpDto)
 
-        return getAccessTokenBySignUpDto(signUpDto)
+        return getAccessTokenBySignUpDto(signUpDto.email, signUpDto.password)
     }
 
-    fun getAccessTokenBySignUpDto(signUpDto: SignUpDto): String {
+    fun getAccessTokenBySignUpDto(email: String, password: String): String {
         val clientId = "myApp"
         val clientSecret = "pass"
 
         val perform = mockMvc.perform(MockMvcRequestBuilders.post("/oauth/token")
                 .with(SecurityMockMvcRequestPostProcessors.httpBasic(clientId, clientSecret))
-                .param("username", signUpDto.email)
-                .param("password", signUpDto.password)
+                .param("username", email)
+                .param("password", password)
                 .param("grant_type", "password"))
 
         val responseBody = perform.andReturn().response.contentAsString

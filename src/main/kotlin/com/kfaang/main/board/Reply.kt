@@ -7,15 +7,20 @@ import javax.persistence.*
 @Entity
 class Reply(
         @Id @GeneratedValue
-        var id: Long,
+        var id: Long? = null,
+
+        var contents: String? = "",
 
         @ManyToOne
-        var account: Account,
+        var post: Post? = null,
+
+        @ManyToOne
+        var account: Account? = null,
 
         @OneToMany
-        var replies: MutableList<Reply> = mutableListOf(),
+        var replies: MutableList<Reply>? = mutableListOf(),
 
-        var wroteAt: LocalDateTime
+        var wroteAt: LocalDateTime? = null
 ) {
 
 

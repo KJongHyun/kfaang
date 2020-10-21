@@ -2,6 +2,7 @@ package com.kfaang.main.board
 
 import com.kfaang.main.board.dto.CategoryDto
 import com.kfaang.main.board.dto.WritePostDto
+import com.kfaang.main.board.dto.WriteReplyDto
 import com.kfaang.main.membership.Account
 import com.kfaang.main.membership.CurrentAccount
 import org.springframework.http.HttpStatus
@@ -22,12 +23,17 @@ class BoardController(
         return ResponseEntity(post, HttpStatus.OK)
     }
 
-    @PostMapping("/{categoryName}/write")
-    fun writePost(@RequestBody writePostDto: WritePostDto, @PathVariable categoryName: String, @CurrentAccount account: Account): ResponseEntity<Any> {
-        val category = categoryRepository.findByName(categoryName) ?: throw Exception()
-        val post = boardService.writePost(writePostDto, category, account)
+    @PostMapping("/write/post")
+    fun writePost(@RequestBody writePostDto: WritePostDto, @CurrentAccount account: Account): ResponseEntity<Any> {
+        val post = boardService.writePost(writePostDto, account)
 
         return ResponseEntity(post, HttpStatus.OK)
+    }
+
+    @PostMapping("/write/reply")
+    fun writeReply(@RequestBody writeReplyDto: WriteReplyDto, @CurrentAccount account: Account): ResponseEntity<Any> {
+        val reply = boardService.writeReply(writeReplyDto, account)
+        return ResponseEntity(reply.id, HttpStatus.CREATED)
     }
 
     @PostMapping("/new-category")
@@ -37,5 +43,7 @@ class BoardController(
 
         return ResponseEntity(category, HttpStatus.CREATED)
     }
+
+
 
 }
