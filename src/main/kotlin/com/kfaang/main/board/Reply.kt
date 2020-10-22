@@ -9,7 +9,7 @@ class Reply(
         @Id @GeneratedValue
         var id: Long? = null,
 
-        var contents: String? = "",
+        var contents: String = "",
 
         @ManyToOne
         var post: Post? = null,
@@ -18,7 +18,7 @@ class Reply(
         var account: Account? = null,
 
         @OneToMany
-        var replies: MutableList<Reply>? = mutableListOf(),
+        var replies: MutableList<Reply> = mutableListOf(),
 
         var wroteAt: LocalDateTime? = null
 ) {

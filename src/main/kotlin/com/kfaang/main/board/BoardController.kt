@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/board")
 class BoardController(
-        private val categoryRepository: CategoryRepository,
         private val boardService: BoardService
 ) {
 
@@ -27,13 +26,13 @@ class BoardController(
     fun writePost(@RequestBody writePostDto: WritePostDto, @CurrentAccount account: Account): ResponseEntity<Any> {
         val post = boardService.writePost(writePostDto, account)
 
-        return ResponseEntity(post, HttpStatus.OK)
+        return ResponseEntity(mapOf(Pair("id", post.id)), HttpStatus.OK)
     }
 
     @PostMapping("/write/reply")
     fun writeReply(@RequestBody writeReplyDto: WriteReplyDto, @CurrentAccount account: Account): ResponseEntity<Any> {
         val reply = boardService.writeReply(writeReplyDto, account)
-        return ResponseEntity(reply.id, HttpStatus.CREATED)
+        return ResponseEntity(mapOf(Pair("id", reply.id)), HttpStatus.CREATED)
     }
 
     @PostMapping("/new-category")

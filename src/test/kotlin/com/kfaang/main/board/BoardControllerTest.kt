@@ -7,22 +7,21 @@ import com.kfaang.main.board.dto.CategoryDto
 import com.kfaang.main.board.dto.WritePostDto
 import com.kfaang.main.board.dto.WriteReplyDto
 import com.kfaang.main.membership.dto.SignUpDto
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.security.oauth2.common.util.Jackson2JsonParser
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 
 internal class BoardControllerTest : BaseControllerTests() {
 
@@ -37,7 +36,7 @@ internal class BoardControllerTest : BaseControllerTests() {
     @Autowired lateinit var boardService: BoardService
 
     companion object {
-        private val BOARD = "/api/board"
+        private const val BOARD = "/api/board"
     }
 
     @BeforeEach
@@ -55,7 +54,7 @@ internal class BoardControllerTest : BaseControllerTests() {
         val categoryDto = CategoryDto(name = "question")
 
         val perform = mockMvc.perform(post("/api/board/new-category")
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken("whdgus8219@naver.com", "428563"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(categoryDto)))
                 .andExpect(status().isCreated)
@@ -73,16 +72,14 @@ internal class BoardControllerTest : BaseControllerTests() {
     @DisplayName("게시글 작성")
     @Test
     fun writePost() {
-        val signUpDto = SignUpDto(email = "whdgus8219@naver.com", password = "428563", nickname = "마나얼")
-        val account = generateAccount(signUpDto)
 
         val categoryName = "free"
 
-        val category = boardService.createCategory(Category(name = categoryName), account = account)
+        val categoryId = createCategory(categoryName)
 
-        val writePostDto = WritePostDto("타이틀", "컨텐츠", category.id!!)
-        val perform = mockMvc.perform(post("$BOARD/${category.name}/write")
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken(signUpDto.email, signUpDto.password))
+        val writePostDto = WritePostDto("타이틀", "컨텐츠", categoryId)
+        val perform = mockMvc.perform(post("$BOARD/write/post")
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken("whdgus8219@naver.com", "428563"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(writePostDto)))
                 .andExpect(status().isOk)
@@ -134,6 +131,7 @@ internal class BoardControllerTest : BaseControllerTests() {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(writeReplyDto)))
                 .andExpect(status().isCreated)
+                .andDo(print())
                 .andExpect(jsonPath("id").exists())
     }
 
