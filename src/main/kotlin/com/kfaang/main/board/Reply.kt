@@ -17,6 +17,9 @@ class Reply(
         @ManyToOne
         var account: Account? = null,
 
+        @ManyToOne
+        var parentReply: Reply? = null,
+
         @OneToMany
         var replies: MutableList<Reply> = mutableListOf(),
 

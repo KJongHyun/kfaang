@@ -36,6 +36,12 @@ class BoardService(
 
     fun writeReply(writeReplyDto: WriteReplyDto, account: Account): Reply {
         val reply = writeReplyDto.toReply()
+
+        if (writeReplyDto.parentReplyId != null) {
+            val parentReply = replyRepository.findById(writeReplyDto.parentReplyId!!).orElseThrow()
+            reply.parentReply = parentReply
+        }
+
         reply.account = account
         reply.post = postRepository.findById(writeReplyDto.postId).orElseThrow()
         reply.wroteAt = LocalDateTime.now()
